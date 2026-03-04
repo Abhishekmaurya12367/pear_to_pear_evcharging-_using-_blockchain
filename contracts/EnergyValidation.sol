@@ -52,7 +52,8 @@ function started(uint256 _requestid) external onlyvalidator{
 }
 function completed(uint256 _requestedid,uint256 _energydelivered) external onlyvalidator
 {
-   require( _Session[])
+   require( _Session[_requestedid].start,"first start the energy");
+   require(!_Session[_requestedid].completed,"charging already completed");
 }
 
 }
