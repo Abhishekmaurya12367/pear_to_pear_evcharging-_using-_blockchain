@@ -54,7 +54,20 @@ function completed(uint256 _requestedid,uint256 _energydelivered) external onlyv
 {
    require( _Session[_requestedid].start,"first start the energy");
    require(!_Session[_requestedid].completed,"charging already completed");
+   _Session[_requestedid].completed=true;
+   _Session[_requestedid].energydelivered=_energydelivered;
+  charging.updateStatus(
+            _requestId,
+            IChargingRequest.Status.COMPLETED
+        );
+   emit chargingcompleted(_requestedid,_energydelivered);
 }
 
+function iscompleted(uint256 _requestedid)external view returns(bool){
+    return _Session[_requestedid].completed;
+}
+function getdeliveredenergy(uint256 _requestedid) external view returns(bools){
+    _Session[_requestedi].energydelivered;
+}
 }
 
