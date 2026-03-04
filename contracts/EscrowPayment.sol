@@ -7,9 +7,9 @@ interface IChargingRequest{
     COMPLETED,
     CANCELED
     }
-function getrequest(uint256)external view return( 
+function getrequest(uint256)external view returns( 
      uint256 id;
-    address reciever;
+    address reciever
     uint256 energyrequired;
     uint256 priceperkilo;
     string location;
