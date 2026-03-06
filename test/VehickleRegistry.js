@@ -6,10 +6,10 @@ describe("  Userregistry contract", function () {
   let user1;
   let user2;
   beforeEach(async function () {
-     [owner, user1, user2] = await ethers.getSigners();
+    [owner, user1, user2] = await ethers.getSigners();
     const Registry = await ethers.getContractFactory("Userregistry");
     registry = await Registry.deploy();
-    await registry.deployed();
+    await registry.waitForDeployment();
   });
   // first test check for deployment
   it("the contract is deployed or not", async function () {
@@ -66,7 +66,7 @@ describe("  Userregistry contract", function () {
     await registry.connect(user1).register_user("tesla", 500, 1);
     await registry.connect(user1).update_role(2);
     const user = await registry.getuser(user1.address);
-    expect(user.role()).to.equal(2);
+    expect(user.role).to.equal(2);
   });
   //unregistered user can not update
   it(" Unregistered user cannot update role", async function () {
@@ -83,19 +83,27 @@ describe("  Userregistry contract", function () {
     );
   });
   //only admin can verify
-  it("only admin can verify ", async function () {
-    await registry.connect(user1).register_user("tesla", 500, 1);
-    await registry.varifyuser(user1.address);
-    const verifirduser = registry.isvarifieduser(user1.address);
-    expect(verified).to.equal(true);
-  });
+ it("only admin can verify", async function () {
+
+  await registry.connect(user1).register_user("tesla", 500, 1);
+
+  await registry.varifyuser(user1.address);
+
+  const verified = await registry.isvarifieduser(user1.address);
+
+  expect(verified).to.equal(true);
+
+});
   // non admin cannot verify;
-  it("only admin can verify ", async function () {
-    await registry.connect(user1).register_user("tesla", 500, 1);
-    await expect(
-      registry.connect(user1).varifyuser(user1.address),
-    ).to.be.revertedWith("only admin allowed");
-  });
+  it("only admin can verify", async function () {
+
+  await registry.connect(user1).register_user("tesla", 500, 1);
+
+  await expect(
+    registry.connect(user1).varifyuser(user1.address)
+  ).to.be.revertedWith("only admin allowed");
+
+});
   //Admin canot verify unregistered user
   it("Admin cannot verify unregistered user", async function () {
     await expect(registry.varifyuser(user1.address)).to.be.revertedWith(

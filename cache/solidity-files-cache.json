@@ -38,8 +38,8 @@
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\ChargingRequest.sol": {
-      "lastModificationDate": 1772818149758,
-      "contentHash": "5f02f6efa41390d2aacbd921fec94f65",
+      "lastModificationDate": 1772828289546,
+      "contentHash": "7d8cadbafe70b936a1b9e02d95c7b7ac",
       "sourceName": "contracts/ChargingRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -66,8 +66,13 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IUserregistry",
+        "charging_request"
+      ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\EnergyValidation.sol": {
       "lastModificationDate": 1772818146177,
