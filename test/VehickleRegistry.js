@@ -28,7 +28,9 @@ it("user register successfully or not " ,async function(){
 });
 //correct ev model is stored or not please test here 
 it("inthis we are testing that the correct model i s stored or not",async function(){
-
+    await registry.connect(user1).register_user("tesla",500,1);
+    const user=await registry.getuser(user1.address);
+    expect(user.evmodel()).to.equal("tesla");
 });
 
 })
