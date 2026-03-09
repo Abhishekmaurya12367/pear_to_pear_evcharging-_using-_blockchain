@@ -42,15 +42,32 @@ it("only variefied user can create request",async function(){
 it("unvarified user can not create request",async function(){
     await registry.connect(user1). register_user("tesla",500,1);
     await expect(
-        chargingRequest.connect(user1).createrequest(
+        charging_request.connect(user1).createrequest(
             20,
             5,
             "Delhi"
         )
     ).to.be.revertedWith("only variefied user allowe");
 });
+// during the creation request the data is properly stored or not ;
+it("the data stored properly or not",async function(){
+    
+})
 // next test user can cancelled it ;
 it("request owner can cancelled the request",async function(){
+    await registry.connect(use1).register_user("tesla",500,1);
+    await registry.varifyuser(user1.address);
+    await charging_request.connect(user1).createrequest(20,5,"delhi");
+    await charging_request.connect(user1).canceled_request(1);
+    const request=await charging_request. getRequest(1);
+   expect(request.status).to.equal(3);
+});
+// non owner can not cancelled the charging request;
+it("non owner can not cancelled the charging request",async function(){
 
+await registry.connect(user1).register_user("tesla",500,10);
+await registry.varifyuser(user1.address);
+await charging_request.connect(user1).createrequest(500,10,"delhi");
+await expect(charging_request.connect(user2).canceled_request(1)).to.be.revertedWith("not request owner");
 });
 })
