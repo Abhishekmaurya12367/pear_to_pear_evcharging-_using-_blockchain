@@ -51,7 +51,16 @@ it("unvarified user can not create request",async function(){
 });
 // during the creation request the data is properly stored or not ;
 it("the data stored properly or not",async function(){
-    
+    await registry.connect(user1).register_user("tesla",500,1);
+    await registry.varifyuser(user1.address);
+    await charging_request.connect(user1).createrequest(500,10,"delhi");
+    const request=await charging_request.getRequest(1);
+    expect((request.energyrequired).toString()).to.equal("500");
+    expect((request.priceperkilo).toString()).to.equal("10");
+    expect((request.location).toString()).to.equal("delhi");
+
+
+
 })
 // next test user can cancelled it ;
 it("request owner can cancelled the request",async function(){
