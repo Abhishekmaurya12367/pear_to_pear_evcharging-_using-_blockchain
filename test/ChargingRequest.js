@@ -34,6 +34,23 @@ it("admin varified to the user",async function(){
 it("only variefied user can create request",async function(){
   await registry.connect(user1).register_user("tesla",500,1);
   await registry.varifyuser(user1.address);
-  await  charging_request.connect(user1).createrequest()
+  await  charging_request.connect(user1).createrequest(500,10,"delhi");
+  const request=await charging_request.getRequest(1);
+  expect((request.energyrequired).toString()).to.equal("500");
+});
+//unvarified user can not creatre request;
+it("unvarified user can not create request",async function(){
+    await registry.connect(user1). register_user("tesla",500,1);
+    await expect(
+        chargingRequest.connect(user1).createrequest(
+            20,
+            5,
+            "Delhi"
+        )
+    ).to.be.revertedWith("only variefied user allowe");
+});
+// next test user can cancelled it ;
+it("request owner can cancelled the request",async function(){
+
 });
 })
