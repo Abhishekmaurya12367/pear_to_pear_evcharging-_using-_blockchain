@@ -8,13 +8,32 @@ describe("charging_request contract",async function(){
     let user2;
 beforeEach(async function(){
     [owner,user1,user2]=await ethers.getSigners();
-    const Mockregistry=await ethers.getContractFactory('Mockregistry');
-    registry=await Mockregistry.deploy();
+     const Registry = await ethers.getContractFactory("Userregistry");
+     registry = await Registry.deploy();
     await registry.waitForDeployment();
-    const ChargingRequest=await ethers.getContractFactory('charging_request');
-    chargingrequest=await ChargingRequest.deploy(await registry.getAddress());
- 
+    const ChargingRequest=await ethers.getContractFactory("charging_request");
+    const registry_address=await registry.getAddress();
+    charging_request=await ChargingRequest.deploy(registry_address);
+    await charging_request.waitForDeployment();
 });
-// first test
-it("")
+// first it checck that the user is registered successfully or not
+it("user should be registered ",async function(){
+    await registry.connect(user1).register_user("tesls",500,1);
+    const check=await registry.getuser(user1.address);
+    expect(check.isRegister).to.equal(true);
+
+});
+// admin varified to the user;
+it("admin varified to the user",async function(){
+    await registry.connect(user1).register_user("tesla",500,1);
+    await registry.varifyuser(user1.address);
+    const chack_varified= await registry.isvarifieduser(user1.address);
+    expect(check_varified).to.equal(true);
+});
+//only varified user can create request;
+it("only variefied user can create request",async function(){
+  await registry.connect(user1).register_user("tesla",500,1);
+  await registry.varifyuser(user1.address);
+  await  charging_request.connect(user1).createrequest()
+});
 })

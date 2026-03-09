@@ -1,5 +1,5 @@
 async function main() {
-  const [deployer]=await ethers.getSigners()
+  const [deployer]=await ethers.getSigners();
   const VehicleRegistry = await ethers.getContractFactory("Userregistry");
 
   const registry = await VehicleRegistry.deploy();
