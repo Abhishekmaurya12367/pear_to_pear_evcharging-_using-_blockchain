@@ -6,8 +6,10 @@ interface IUserregistry{
 contract charging_request
 {
  IUserregistry public registry;
- constructor(address _registry){
+ address public validator;
+ constructor(address _registry,address _validator ){
     registry=IUserregistry(_registry);
+    validator = _validator;
  }
  enum Status{
     OPEN,
@@ -28,6 +30,13 @@ contract charging_request
 
 event RequestCreated(uint256 indexed requestId, address indexed receiver); 
 event requestcancelled(uint256 indexed request_id);
+modifier onlyValidatorOrUser() {
+    require(
+        registry.isvarifieduser(msg.sender) || msg.sender == validator,
+        "not allowed"
+    );
+    _;
+}
  modifier onlyvariefieduser(){
     require(registry.isvarifieduser(msg.sender),"only variefied user allowe");
     _;
@@ -61,5 +70,13 @@ function canceled_request(uint256 _requisted_id) external{
 function getRequest(uint256 _id)external view returns(Request memory)
 {
  return request[_id];
+}
+function updatestatus(uint256 _id, Status _status) external onlyValidatorOrUser {
+    require(_id > 0 && _id <= requestCount, "Invalid request id");
+
+    Request storage req = request[_id];
+    require(req.status != Status.CANCELED, "Request already canceled");
+
+    req.status = _status;
 }
 }

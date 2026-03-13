@@ -1,97 +1,97 @@
-// // SPDX-License-Identifier: MIT
-// pragma solidity ^0.8.20;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-// /* ========= INTERFACE ========= */
+/* ========= INTERFACE ========= */
 
-// interface IEscrowPayment {
+interface IEscrowPayment {
 
-//     function paymentReleased(uint256 requestId)
-//         external
-//         view
-//         returns(bool);
-// }
+    function paymentReleased(uint256 requestId)
+        external
+        view
+        returns(bool);
+}
 
-// /* ========= REPUTATION SYSTEM ========= */
+/* ========= REPUTATION SYSTEM ========= */
 
-// contract ReputationSystem {
+contract ReputationSystem {
 
-//     IEscrowPayment public escrow;
+    IEscrowPayment public escrow;
 
-//     constructor(address _escrow) {
-//         escrow = IEscrowPayment(_escrow);
-//     }
+    constructor(address _escrow) {
+        escrow = IEscrowPayment(_escrow);
+    }
 
-//     /* ========= STRUCT ========= */
+    /* ========= STRUCT ========= */
 
-//     struct Reputation {
-//         uint256 totalRating;
-//         uint256 ratingCount;
-//     }
+    struct Reputation {
+        uint256 totalRating;
+        uint256 ratingCount;
+    }
 
-//     mapping(address => Reputation) public reputations;
+    mapping(address => Reputation) public reputations;
 
-//     // prevent double rating
-//     mapping(uint256 => mapping(address => bool)) public rated;
+    // prevent double rating
+    mapping(uint256 => mapping(address => bool)) public rated;
 
-//     /* ========= EVENTS ========= */
+    /* ========= EVENTS ========= */
 
-//     event UserRated(
-//         uint256 indexed requestId,
-//         address indexed rater,
-//         address indexed user,
-//         uint256 rating
-//     );
+    event UserRated(
+        uint256 indexed requestId,
+        address indexed rater,
+        address indexed user,
+        uint256 rating
+    );
 
-//     /* ========= RATE USER ========= */
+    /* ========= RATE USER ========= */
 
-//     function rateUser(
-//         uint256 requestId,
-//         address user,
-//         uint256 rating
-//     )
-//         external
-//     {
-//         require(
-//             escrow.paymentReleased(requestId),
-//             "Payment not released"
-//         );
+    function rateUser(
+        uint256 requestId,
+        address user,
+        uint256 rating
+    )
+        external
+    {
+        require(
+            escrow.paymentReleased(requestId),
+            "Payment not released"
+        );
 
-//         require(
-//             rating >= 1 && rating <= 5,
-//             "Rating must be 1-5"
-//         );
+        require(
+            rating >= 1 && rating <= 5,
+            "Rating must be 1-5"
+        );
 
-//         require(
-//             !rated[requestId][msg.sender],
-//             "Already rated"
-//         );
+        require(
+            !rated[requestId][msg.sender],
+            "Already rated"
+        );
 
-//         reputations[user].totalRating += rating;
-//         reputations[user].ratingCount += 1;
+        reputations[user].totalRating += rating;
+        reputations[user].ratingCount += 1;
 
-//         rated[requestId][msg.sender] = true;
+        rated[requestId][msg.sender] = true;
 
-//         emit UserRated(
-//             requestId,
-//             msg.sender,
-//             user,
-//             rating
-//         );
-//     }
+        emit UserRated(
+            requestId,
+            msg.sender,
+            user,
+            rating
+        );
+    }
 
-//     /* ========= GET AVERAGE RATING ========= */
+    /* ========= GET AVERAGE RATING ========= */
 
-//     function getAverageRating(address user)
-//         external
-//         view
-//         returns(uint256)
-//     {
-//         Reputation memory rep = reputations[user];
+    function getAverageRating(address user)
+        external
+        view
+        returns(uint256)
+    {
+        Reputation memory rep = reputations[user];
 
-//         if(rep.ratingCount == 0){
-//             return 0;
-//         }
+        if(rep.ratingCount == 0){
+            return 0;
+        }
 
-//         return rep.totalRating / rep.ratingCount;
-//     }
-// }
+        return rep.totalRating / rep.ratingCount;
+    }
+}

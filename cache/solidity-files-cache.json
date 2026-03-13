@@ -1,45 +1,9 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\VehicleRegistry.sol": {
-      "lastModificationDate": 1772313567406,
-      "contentHash": "5081932618cd9bf4a3c86f371b7153f1",
-      "sourceName": "contracts/VehicleRegistry.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "Userregistry"
-      ]
-    },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\ChargingRequest.sol": {
-      "lastModificationDate": 1772828289546,
-      "contentHash": "7d8cadbafe70b936a1b9e02d95c7b7ac",
+      "lastModificationDate": 1773402681551,
+      "contentHash": "473445f045b56a7e1df362c84ea1fe7e",
       "sourceName": "contracts/ChargingRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -75,8 +39,8 @@
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\EnergyValidation.sol": {
-      "lastModificationDate": 1772818146177,
-      "contentHash": "105e2b356312e2727affef64e88ca3df",
+      "lastModificationDate": 1773405651435,
+      "contentHash": "f478acfcc161f317e67be59a1d41b37e",
       "sourceName": "contracts/EnergyValidation.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -103,12 +67,17 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "EnergyValidation",
+        "IChargingRequest"
+      ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\EscrowPayment.sol": {
-      "lastModificationDate": 1772818142804,
-      "contentHash": "96f710b31572030fc76c8342b8b14766",
+      "lastModificationDate": 1773408870733,
+      "contentHash": "a9fa3170dbe22bd60284cf60278d9016",
       "sourceName": "contracts/EscrowPayment.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -135,12 +104,18 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "EscrowPayment",
+        "IChargingRequest",
+        "IMatchingContract"
+      ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\GovernanceAdmin.sol": {
-      "lastModificationDate": 1772818139194,
-      "contentHash": "951f3dec5b93782f42fdca1dee3a89c7",
+      "lastModificationDate": 1773391248334,
+      "contentHash": "30fe389a961b0f5b678018c5c35aa139",
       "sourceName": "contracts/GovernanceAdmin.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -167,12 +142,19 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "GovernanceAdmin",
+        "IEnergyValidation",
+        "IEscrowPayment",
+        "IPlatformFee"
+      ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\MatchingContract.sol": {
-      "lastModificationDate": 1772818135829,
-      "contentHash": "dd497f9f86e8ab0c6738f239d1e1f0b2",
+      "lastModificationDate": 1773391118912,
+      "contentHash": "4500eda3de12663317796a41fb1183c3",
       "sourceName": "contracts/MatchingContract.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -199,12 +181,18 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Ichargingrequest",
+        "IuserRegistry",
+        "MatchingContract"
+      ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\PlatformFee.sol": {
-      "lastModificationDate": 1772818131902,
-      "contentHash": "da9b69c6ce673f80fbc2eacbb18a5927",
+      "lastModificationDate": 1773391186292,
+      "contentHash": "d0c92f874acf21766218efd7fc3075f2",
       "sourceName": "contracts/PlatformFee.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -231,12 +219,16 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "PlatformFee"
+      ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\ReputationSystem.sol": {
-      "lastModificationDate": 1772818126280,
-      "contentHash": "c679e926f908582a15b39f8f09344187",
+      "lastModificationDate": 1773391293894,
+      "contentHash": "b713753b9c0dfd8787ad2bd5e07a600a",
       "sourceName": "contracts/ReputationSystem.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -263,8 +255,49 @@
         }
       },
       "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IEscrowPayment",
+        "ReputationSystem"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\VehicleRegistry.sol": {
+      "lastModificationDate": 1773385247750,
+      "contentHash": "5081932618cd9bf4a3c86f371b7153f1",
+      "sourceName": "contracts/VehicleRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Userregistry"
+      ]
     }
   }
 }
