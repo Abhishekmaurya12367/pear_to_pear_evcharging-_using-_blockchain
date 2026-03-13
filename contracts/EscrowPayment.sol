@@ -120,4 +120,14 @@ contract EscrowPayment {
 
         emit refundpayment(_requestedid, reciever, amount);
     }
+bool public paused;
+
+modifier notPaused() {
+    require(!paused, "Escrow paused");
+    _;
+}
+
+function pauseEscrow(bool status) external {
+    paused = status;
+}
 }

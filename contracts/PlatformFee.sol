@@ -95,4 +95,12 @@ contract PlatformFee {
 
         emit Withdraw(owner, balance);
     }
+    function transferOwnership(address newOwner)
+external
+onlyOwner
+{
+    require(newOwner != address(0), "Invalid address");
+
+    owner = newOwner;
+}
 }

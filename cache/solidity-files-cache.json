@@ -39,8 +39,8 @@
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\EnergyValidation.sol": {
-      "lastModificationDate": 1773405651435,
-      "contentHash": "f478acfcc161f317e67be59a1d41b37e",
+      "lastModificationDate": 1773411697812,
+      "contentHash": "11c5e73069cd7d616ff6630d6dca5e12",
       "sourceName": "contracts/EnergyValidation.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -76,8 +76,8 @@
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\EscrowPayment.sol": {
-      "lastModificationDate": 1773408870733,
-      "contentHash": "a9fa3170dbe22bd60284cf60278d9016",
+      "lastModificationDate": 1773411459126,
+      "contentHash": "803863384a4d1b6f00884531917499d7",
       "sourceName": "contracts/EscrowPayment.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -191,8 +191,8 @@
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\PlatformFee.sol": {
-      "lastModificationDate": 1773391186292,
-      "contentHash": "d0c92f874acf21766218efd7fc3075f2",
+      "lastModificationDate": 1773412223113,
+      "contentHash": "b60ab036ec705429d50227636e6e7857",
       "sourceName": "contracts/PlatformFee.sol",
       "solcConfig": {
         "version": "0.8.28",

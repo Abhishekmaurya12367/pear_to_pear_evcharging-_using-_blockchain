@@ -88,4 +88,9 @@ contract EnergyValidation
     function getdeliveredenergy(uint256 _requestedid) external view returns(uint256){
         return _Session[_requestedid].energydelivered;
     }
+    function changeValidator(address newValidator)
+external
+{
+    validator = newValidator;
+}
 }
