@@ -76,8 +76,8 @@
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\EscrowPayment.sol": {
-      "lastModificationDate": 1773411459126,
-      "contentHash": "803863384a4d1b6f00884531917499d7",
+      "lastModificationDate": 1773486920226,
+      "contentHash": "36f1c969347cb3e69a89fc100b8d88ec",
       "sourceName": "contracts/EscrowPayment.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -110,7 +110,8 @@
       "artifacts": [
         "EscrowPayment",
         "IChargingRequest",
-        "IMatchingContract"
+        "IMatchingContract",
+        "IPlatformFee"
       ]
     },
     "C:\\Users\\Abhishek Maurya\\hardhat_edp\\contracts\\GovernanceAdmin.sol": {

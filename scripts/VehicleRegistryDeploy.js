@@ -1,16 +1,24 @@
-async function main() {
-  const [deployer]=await ethers.getSigners();
-  const VehicleRegistry = await ethers.getContractFactory("Userregistry");
+const fs = require("fs");
 
-  const registry = await VehicleRegistry.deploy();
+async function main() {
+
+  const UserRegistry = await ethers.getContractFactory("Userregistry");
+  const registry = await UserRegistry.deploy();
 
   await registry.waitForDeployment();
 
-  console.log("Contract deployed to:", await registry.getAddress());
+  const registryAddress = await registry.getAddress();
 
+  console.log("UserRegistry deployed:", registryAddress);
+  let addresses = {};
+  if (fs.existsSync("addresses.json")) {
+    addresses = JSON.parse(fs.readFileSync("addresses.json"));
+  }
+
+
+  addresses.UserRegistry = registryAddress;
+
+  fs.writeFileSync("addresses.json", JSON.stringify(addresses, null, 2));
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main().catch(console.error);

@@ -32,12 +32,20 @@ interface IMatchingContract {
     );
 }
 
+/* -------- Platform Fee Interface -------- */
+
+interface IPlatformFee {
+    function calculateFee(uint256 amount) external view returns(uint256);
+    function collectFee() external payable;
+}
+
 contract EscrowPayment {
 
     address public admin;
 
     IChargingRequest public charging;
     IMatchingContract public matching;
+    IPlatformFee public platform;
 
     mapping(uint256 => uint256) public Escrowbalance;
 
@@ -46,15 +54,18 @@ contract EscrowPayment {
         _;
     }
 
-    event Paymentdeposited(uint256 indexed _requestid, address reciever, uint256 amount);
+    event Paymentdeposited(uint256 indexed requestid, address reciever, uint256 amount);
     event Paymentrelease(uint256 indexed requestid, address donor, uint256 amount);
-    event refundpayment(uint256 indexed _requestid, address reciever, uint256 amount);
+    event refundpayment(uint256 indexed requestid, address reciever, uint256 amount);
 
-    constructor(address _charging, address _matching) {
+    constructor(address _charging, address _matching, address _platform) {
         admin = msg.sender;
         charging = IChargingRequest(_charging);
         matching = IMatchingContract(_matching);
+        platform = IPlatformFee(_platform);
     }
+
+    /* -------- Deposit Payment -------- */
 
     function deposite(uint256 _requestedid) external payable {
 
@@ -65,8 +76,8 @@ contract EscrowPayment {
         uint256 priceperkilo = req.priceperkilo;
         IChargingRequest.Status status = req.status;
 
-        require(msg.sender == reciever, "only reciever can deposite");
-        require(status == IChargingRequest.Status.ACCEPTED, "only accepted request allowed");
+        require(msg.sender == reciever, "only reciever can deposit");
+        require(status == IChargingRequest.Status.ACCEPTED, "request not accepted");
         require(Escrowbalance[_requestedid] == 0, "already deposited");
 
         uint256 totalcost = energyrequired * priceperkilo;
@@ -77,6 +88,8 @@ contract EscrowPayment {
 
         emit Paymentdeposited(_requestedid, msg.sender, msg.value);
     }
+
+    /* -------- Release Payment -------- */
 
     function paymentrelease(uint256 _requestedid) external onlyadmin {
 
@@ -90,9 +103,11 @@ contract EscrowPayment {
         require(active, "matching not found");
 
         IChargingRequest.Request memory req = charging.getRequest(_requestedid);
-        IChargingRequest.Status status = req.status;
 
-        require(status == IChargingRequest.Status.COMPLETED, "charging not completed");
+        require(
+            req.status == IChargingRequest.Status.COMPLETED,
+            "charging not completed"
+        );
 
         uint256 amount = Escrowbalance[_requestedid];
 
@@ -100,10 +115,23 @@ contract EscrowPayment {
 
         Escrowbalance[_requestedid] = 0;
 
-        payable(donor).transfer(amount);
+        /* ---- Calculate Platform Fee ---- */
 
-        emit Paymentrelease(_requestedid, donor, amount);
+        uint256 fee = platform.calculateFee(amount);
+        uint256 donorAmount = amount - fee;
+
+        /* ---- Send Fee to Platform ---- */
+
+        platform.collectFee{value: fee}();
+
+        /* ---- Send Remaining to Donor ---- */
+
+        payable(donor).transfer(donorAmount);
+
+        emit Paymentrelease(_requestedid, donor, donorAmount);
     }
+
+    /* -------- Refund Payment -------- */
 
     function refund(uint256 _requestedid) external onlyadmin {
 
@@ -120,14 +148,17 @@ contract EscrowPayment {
 
         emit refundpayment(_requestedid, reciever, amount);
     }
-bool public paused;
 
-modifier notPaused() {
-    require(!paused, "Escrow paused");
-    _;
-}
+    /* -------- Pause System -------- */
 
-function pauseEscrow(bool status) external {
-    paused = status;
-}
+    bool public paused;
+
+    modifier notPaused() {
+        require(!paused, "Escrow paused");
+        _;
+    }
+
+    function pauseEscrow(bool status) external onlyadmin {
+        paused = status;
+    }
 }
