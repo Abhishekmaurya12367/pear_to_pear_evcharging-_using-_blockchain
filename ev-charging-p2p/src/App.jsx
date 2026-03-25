@@ -9,6 +9,7 @@ import ConnectPage from "./pages/ConnectPage";
 import RoleSelectPage from "./pages/RoleSelectPage";
 import ReceiverDashboard from "./pages/ReceiverDashboard";
 import DonorDashboard from "./pages/DonorDashboard";
+import AdminPanel from "./pages/AdminPanel";
 import Navbar from "./components/Navbar";
 
 function Protected({ children }) {
@@ -72,6 +73,16 @@ export default function App() {
                   <DonorDashboard />
                 </Shell>
               </RequireDonor>
+            </Protected>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <Protected>
+              <Shell>
+                <AdminPanel />
+              </Shell>
             </Protected>
           }
         />

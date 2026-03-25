@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
+import { connectMetaMask } from "../lib/wallet";
 
 function shortAddr(a) {
   if (!a) return "";
@@ -11,9 +12,9 @@ export default function Navbar() {
   const {
     walletAddress,
     role,
-    demoMode,
     disconnect,
     setRole,
+    setWallet,
   } = useStore();
 
   return (
@@ -41,19 +42,38 @@ export default function Navbar() {
         </Link>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          {demoMode && (
-            <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-200">
-              Demo mode
-            </span>
-          )}
           {role && (
             <span className="hidden rounded-full bg-surface-raised px-3 py-1 text-xs font-medium text-slate-300 sm:inline">
               {role === "donor" ? "Donor" : "Receiver"}
             </span>
           )}
+          <Link
+            to="/admin"
+            className="rounded-full border border-surface-border px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-accent/50 hover:text-white"
+          >
+            Admin
+          </Link>
           <div className="flex items-center gap-2 rounded-full border border-surface-border bg-surface px-3 py-1.5 font-mono text-xs text-slate-200">
-            {shortAddr(walletAddress)}
+            {shortAddr(walletAddress) || "Not connected"}
           </div>
+          {!walletAddress && (
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const { provider, signer, address, chainId } =
+                    await connectMetaMask();
+                  setWallet({ address, signer, provider, chainId });
+                } catch (e) {
+                  // surface in console; UI already shows not connected
+                  console.warn("MetaMask connect failed:", e);
+                }
+              }}
+              className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-ink-950 transition hover:bg-accent-dim"
+            >
+              Connect wallet
+            </button>
+          )}
           <button
             type="button"
             onClick={() => {

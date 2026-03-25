@@ -18,7 +18,17 @@ export async function connectMetaMask() {
     );
   }
   const provider = new BrowserProvider(eth);
-  await provider.send("eth_requestAccounts", []);
+  // Force a permission prompt every time so the user can choose an account.
+  try {
+    await eth.request({
+      method: "wallet_requestPermissions",
+      params: [{ eth_accounts: {} }],
+    });
+  } catch (e) {
+    // Fallback: some wallets don't support wallet_requestPermissions; use the legacy request.
+    await provider.send("eth_requestAccounts", []);
+  }
+
   const signer = await provider.getSigner();
   const address = await signer.getAddress();
   const network = await provider.getNetwork();

@@ -16,6 +16,7 @@ export default function ReceiverDashboard() {
   const [kwh, setKwh] = useState("");
   const [slot, setSlot] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const mine = requests.filter(
     (r) => r.receiver?.toLowerCase() === walletAddress?.toLowerCase()
@@ -23,12 +24,15 @@ export default function ReceiverDashboard() {
 
   async function onCreate(e) {
     e.preventDefault();
+    setError(null);
     setSubmitting(true);
     try {
       await submitCreateRequest(loc.trim(), kwh, slot.trim());
       setLoc("");
       setKwh("");
       setSlot("");
+    } catch (err) {
+      setError(err?.message || "Failed to create request. Check console for details.");
     } finally {
       setSubmitting(false);
     }
@@ -78,6 +82,11 @@ export default function ReceiverDashboard() {
             required
           />
         </div>
+        {error ? (
+          <p className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {error}
+          </p>
+        ) : null}
         <button
           type="submit"
           disabled={submitting}

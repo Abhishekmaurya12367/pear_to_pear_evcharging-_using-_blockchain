@@ -6,7 +6,6 @@ import { connectMetaMask } from "../lib/wallet";
 export default function ConnectPage() {
   const navigate = useNavigate();
   const setWallet = useStore((s) => s.setWallet);
-  const initDemoRequests = useStore((s) => s.initDemoRequests);
   const [err, setErr] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -20,28 +19,13 @@ export default function ConnectPage() {
         signer,
         provider,
         chainId,
-        demoMode: false,
       });
-      initDemoRequests();
       navigate("/role");
     } catch (e) {
       setErr(e.message || String(e));
     } finally {
       setBusy(false);
     }
-  }
-
-  function onDemo() {
-    setErr(null);
-    setWallet({
-      address: "0x1111111111111111111111111111111111111111",
-      signer: null,
-      provider: null,
-      chainId: 31337,
-      demoMode: true,
-    });
-    initDemoRequests();
-    navigate("/role");
   }
 
   return (
@@ -68,13 +52,6 @@ export default function ConnectPage() {
         <div className="relative py-2 text-center text-xs text-slate-500">
           <span className="bg-surface px-2">or try without wallet</span>
         </div>
-        <button
-          type="button"
-          onClick={onDemo}
-          className="w-full rounded-2xl border border-surface-border py-3.5 text-sm font-medium text-slate-300 transition hover:border-accent/40 hover:text-white"
-        >
-          Demo mode (mock chain)
-        </button>
         {err ? (
           <p className="rounded-xl bg-red-500/10 p-3 text-center text-sm text-red-300">
             {err}
@@ -82,8 +59,7 @@ export default function ConnectPage() {
         ) : null}
       </div>
       <p className="mt-8 max-w-sm text-center text-xs text-slate-600">
-        Demo mode uses simulated transactions and sample requests. MetaMask uses the dummy
-        contract address from <code className="text-slate-500">.env</code> when set.
+        MetaMask will call your deployed contracts using addresses from <code className="text-slate-500">.env</code>.
       </p>
     </div>
   );
