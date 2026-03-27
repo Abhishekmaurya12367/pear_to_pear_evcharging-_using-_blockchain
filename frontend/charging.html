@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charging Session</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.umd.min.js"></script>
+  <script src="./config.js"></script>
+  <script type="text/babel" data-presets="react" src="./charging.jsx"></script>
+</head>
+<body>
+  <div id="root">Loading charging session…</div>
+  <script>
+    window.addEventListener("error", (e) => {
+      const el = document.getElementById("root");
+      if (el) el.textContent = "Startup error: " + (e.message || e.type);
+    });
+    window.addEventListener("unhandledrejection", (e) => {
+      const el = document.getElementById("root");
+      if (el) el.textContent = "Startup error: " + (e.reason && e.reason.message ? e.reason.message : "Promise rejected");
+    });
+  </script>
+</body>
+</html>

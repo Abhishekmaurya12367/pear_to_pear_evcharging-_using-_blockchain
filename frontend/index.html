@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV P2P Energy DApp</title>
+  <link rel="stylesheet" href="./styles.css">
+  <!-- React + Babel (browser build keeps http-server workflow simple) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Ethers v6 UMD -->
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.umd.min.js"></script>
+  <script src="./config.js"></script>
+  <!-- component splits -->
+  <script type="text/babel" data-presets="react" src="./components/Onboard.jsx"></script>
+  <script type="text/babel" data-presets="react" src="./components/Receiver.jsx"></script>
+  <script type="text/babel" data-presets="react" src="./components/Donor.jsx"></script>
+  <script type="text/babel" data-presets="react" src="./components/Receipts.jsx"></script>
+  <script type="text/babel" data-presets="react" src="./components/Logs.jsx"></script>
+</head>
+<body>
+  <div id="root">Loading DApp…</div>
+  <script>
+    window.addEventListener("load", () => {
+      const el = document.getElementById("root");
+      if (!window.React) el.textContent = "Startup error: React failed to load";
+      else if (!window.ReactDOM) el.textContent = "Startup error: ReactDOM failed to load";
+      else if (!window.Babel) el.textContent = "Startup error: Babel failed to load";
+      else if (!window.ethers) el.textContent = "Startup error: Ethers failed to load";
+    });
+    window.addEventListener("error", (e) => {
+      const el = document.getElementById("root");
+      if (el) {
+        el.textContent = "Startup error: " + (e.message || e.type) +
+          (e.filename ? " (" + e.filename + ":" + e.lineno + ")" : "");
+      }
+    });
+    window.addEventListener("unhandledrejection", (e) => {
+      const el = document.getElementById("root");
+      if (el) {
+        const msg = e.reason && e.reason.message ? e.reason.message : "Promise rejected";
+        el.textContent = "Startup error: " + msg;
+      }
+    });
+  </script>
+  <script type="text/babel" data-presets="react" src="./app.jsx"></script>
+</body>
+</html>

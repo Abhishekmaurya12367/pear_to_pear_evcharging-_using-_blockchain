@@ -299,6 +299,305 @@
       "artifacts": [
         "Userregistry"
       ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\ChargingRequest.sol": {
+      "lastModificationDate": 1774638039896,
+      "contentHash": "88ed457fa84a0a57f65c9c533027d3cc",
+      "sourceName": "contracts/ChargingRequest.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IUserregistry",
+        "charging_request"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\EnergyValidation.sol": {
+      "lastModificationDate": 1774437437407,
+      "contentHash": "11c5e73069cd7d616ff6630d6dca5e12",
+      "sourceName": "contracts/EnergyValidation.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "EnergyValidation",
+        "IChargingRequest"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\EscrowPayment.sol": {
+      "lastModificationDate": 1774605068372,
+      "contentHash": "36f1c969347cb3e69a89fc100b8d88ec",
+      "sourceName": "contracts/EscrowPayment.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "EscrowPayment",
+        "IChargingRequest",
+        "IMatchingContract",
+        "IPlatformFee"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\GovernanceAdmin.sol": {
+      "lastModificationDate": 1774437437408,
+      "contentHash": "30fe389a961b0f5b678018c5c35aa139",
+      "sourceName": "contracts/GovernanceAdmin.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "GovernanceAdmin",
+        "IEnergyValidation",
+        "IEscrowPayment",
+        "IPlatformFee"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\MatchingContract.sol": {
+      "lastModificationDate": 1774437437409,
+      "contentHash": "4500eda3de12663317796a41fb1183c3",
+      "sourceName": "contracts/MatchingContract.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Ichargingrequest",
+        "IuserRegistry",
+        "MatchingContract"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\PlatformFee.sol": {
+      "lastModificationDate": 1774437437409,
+      "contentHash": "b60ab036ec705429d50227636e6e7857",
+      "sourceName": "contracts/PlatformFee.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "PlatformFee"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\ReputationSystem.sol": {
+      "lastModificationDate": 1774437437410,
+      "contentHash": "b713753b9c0dfd8787ad2bd5e07a600a",
+      "sourceName": "contracts/ReputationSystem.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IEscrowPayment",
+        "ReputationSystem"
+      ]
+    },
+    "C:\\Users\\Abhishek Maurya\\Downloads\\frontededpwithblockchain\\contracts\\VehicleRegistry.sol": {
+      "lastModificationDate": 1774437437410,
+      "contentHash": "5081932618cd9bf4a3c86f371b7153f1",
+      "sourceName": "contracts/VehicleRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Userregistry"
+      ]
     }
   }
 }

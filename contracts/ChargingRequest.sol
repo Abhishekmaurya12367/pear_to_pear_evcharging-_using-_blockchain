@@ -79,4 +79,7 @@ function updatestatus(uint256 _id, Status _status) external onlyValidatorOrUser 
 
     req.status = _status;
 }
+function getRegistryAddress() public view returns (address) {
+    return address(registry);
+}
 }

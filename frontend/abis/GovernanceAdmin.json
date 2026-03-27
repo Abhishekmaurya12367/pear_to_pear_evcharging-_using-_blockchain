@@ -1,0 +1,216 @@
+[
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "address",
+                           "name":  "_platformFee",
+                           "type":  "address"
+                       },
+                       {
+                           "internalType":  "address",
+                           "name":  "_energyValidation",
+                           "type":  "address"
+                       },
+                       {
+                           "internalType":  "address",
+                           "name":  "_escrow",
+                           "type":  "address"
+                       }
+                   ],
+        "stateMutability":  "nonpayable",
+        "type":  "constructor"
+    },
+    {
+        "anonymous":  false,
+        "inputs":  [
+                       {
+                           "indexed":  true,
+                           "internalType":  "address",
+                           "name":  "oldOwner",
+                           "type":  "address"
+                       },
+                       {
+                           "indexed":  true,
+                           "internalType":  "address",
+                           "name":  "newOwner",
+                           "type":  "address"
+                       }
+                   ],
+        "name":  "OwnershipTransferred",
+        "type":  "event"
+    },
+    {
+        "anonymous":  false,
+        "inputs":  [
+                       {
+                           "indexed":  false,
+                           "internalType":  "uint256",
+                           "name":  "newFee",
+                           "type":  "uint256"
+                       }
+                   ],
+        "name":  "PlatformFeeUpdated",
+        "type":  "event"
+    },
+    {
+        "anonymous":  false,
+        "inputs":  [
+                       {
+                           "indexed":  false,
+                           "internalType":  "bool",
+                           "name":  "status",
+                           "type":  "bool"
+                       }
+                   ],
+        "name":  "SystemPauseChanged",
+        "type":  "event"
+    },
+    {
+        "anonymous":  false,
+        "inputs":  [
+                       {
+                           "indexed":  false,
+                           "internalType":  "address",
+                           "name":  "newValidator",
+                           "type":  "address"
+                       }
+                   ],
+        "name":  "ValidatorUpdated",
+        "type":  "event"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "address",
+                           "name":  "newValidator",
+                           "type":  "address"
+                       }
+                   ],
+        "name":  "changeValidator",
+        "outputs":  [
+
+                    ],
+        "stateMutability":  "nonpayable",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+
+                   ],
+        "name":  "energyValidation",
+        "outputs":  [
+                        {
+                            "internalType":  "address",
+                            "name":  "",
+                            "type":  "address"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+
+                   ],
+        "name":  "escrow",
+        "outputs":  [
+                        {
+                            "internalType":  "address",
+                            "name":  "",
+                            "type":  "address"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+
+                   ],
+        "name":  "owner",
+        "outputs":  [
+                        {
+                            "internalType":  "address",
+                            "name":  "",
+                            "type":  "address"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+
+                   ],
+        "name":  "platformFee",
+        "outputs":  [
+                        {
+                            "internalType":  "address",
+                            "name":  "",
+                            "type":  "address"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "bool",
+                           "name":  "status",
+                           "type":  "bool"
+                       }
+                   ],
+        "name":  "setSystemPause",
+        "outputs":  [
+
+                    ],
+        "stateMutability":  "nonpayable",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+
+                   ],
+        "name":  "systemPaused",
+        "outputs":  [
+                        {
+                            "internalType":  "bool",
+                            "name":  "",
+                            "type":  "bool"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "address",
+                           "name":  "newOwner",
+                           "type":  "address"
+                       }
+                   ],
+        "name":  "transferOwnership",
+        "outputs":  [
+
+                    ],
+        "stateMutability":  "nonpayable",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "uint256",
+                           "name":  "newFee",
+                           "type":  "uint256"
+                       }
+                   ],
+        "name":  "updatePlatformFee",
+        "outputs":  [
+
+                    ],
+        "stateMutability":  "nonpayable",
+        "type":  "function"
+    }
+]

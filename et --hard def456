@@ -1,0 +1,29 @@
+[33m346d9372[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33m547bf019[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{1}: commit: frontefixng
+[33m346d9372[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{2}: commit: Initial commit - blockchain project
+[33m8779ea61[m HEAD@{3}: pull origin main --rebase (finish): returning to refs/heads/main
+[33m8779ea61[m HEAD@{4}: pull origin main --rebase (pick): Initial commit - blockchain project
+[33md736d3f4[m HEAD@{5}: pull origin main --rebase (start): checkout d736d3f4d812d292333cc157216143d7c1be85b5
+[33mf34fb488[m HEAD@{6}: Branch: renamed refs/heads/main to refs/heads/main
+[33mf34fb488[m HEAD@{8}: commit: Initial commit - blockchain project
+[33m3101c2e2[m HEAD@{9}: commit: second commit
+[33md4ee8775[m HEAD@{10}: commit: second commit
+[33m7af920a9[m HEAD@{11}: commit: second commit
+[33m40fa12c4[m HEAD@{12}: commit: second commit
+[33m2f6da5d6[m HEAD@{13}: commit: second commit
+[33m3291f3dc[m HEAD@{14}: commit: second commit
+[33m6c49136e[m HEAD@{15}: commit: second commit
+[33m1e941e52[m HEAD@{16}: commit: second commit
+[33m42454b29[m HEAD@{17}: commit: second commit
+[33mc45d3b28[m HEAD@{18}: commit: second commit
+[33ma66d9088[m HEAD@{19}: commit: second commit
+[33mb42ed64c[m HEAD@{20}: commit: second commit
+[33ma02e583a[m HEAD@{21}: commit: second commit
+[33m7d7afad1[m HEAD@{22}: commit: second commit
+[33m8a3c41b4[m HEAD@{23}: commit: second commit
+[33m771194d1[m HEAD@{24}: commit: second commit
+[33mc658ed90[m HEAD@{25}: commit: second commit
+[33m06c16f65[m HEAD@{26}: commit: second commit
+[33m0d8f9827[m HEAD@{27}: commit: second commit
+[33m2b557c4c[m HEAD@{28}: commit: second commit
+[33m23896030[m HEAD@{29}: commit (initial): first commit
