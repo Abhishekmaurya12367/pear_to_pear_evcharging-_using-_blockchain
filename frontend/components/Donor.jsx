@@ -7,11 +7,6 @@ window.DonorView = function DonorView({
   acceptingId,
   forms,
   setForm,
-  startSession,
-  completeSession,
-  autoRelease,
-  setAutoRelease,
-  adminAddress,
 }) {
   return (
     <div className="grid">
@@ -58,57 +53,12 @@ window.DonorView = function DonorView({
         </div>
       </div>
 
-      <div className={`card ${locked ? "locked" : ""}`}>
-        <h2>Phase 4 — Charging Session</h2>
-        <label>
-          Request id
-          <input
-            value={forms.start.id}
-            onChange={(e) => {
-              setForm("start", "id", e.target.value);
-              setForm("complete", "id", e.target.value);
-            }}
-          />
-        </label>
-        <div className="row">
-          <button onClick={() => startSession(forms.start.id)} disabled={needConnection || locked}>
-            Start charging
-          </button>
-          <div style={{ flex: 1 }} />
-        </div>
-        <div className="divider" />
-        <label>
-          Energy delivered (for completion)
-          <input
-            value={forms.complete.delivered}
-            onChange={(e) => setForm("complete", "delivered", e.target.value)}
-          />
-        </label>
-        <button
-          onClick={() => completeSession(forms.complete.id, forms.complete.delivered)}
-          disabled={needConnection || locked}
-        >
-          Complete charging
-        </button>
+      <div className="card">
+        <h2>Charging Session</h2>
         <p className="muted small">
-          Contract requires validator to call start/complete. If you are not the validator address,
-          these txs will revert.
+          After you accept a request, a charging session page opens. The validator (backend
+          simulator wallet) will start/complete charging and handle on-chain payout automatically.
         </p>
-      </div>
-
-      <div className={`card ${locked ? "locked" : ""}`}>
-        <h2>Auto-Release (admin wallet only)</h2>
-        <label className="row" style={{ alignItems: "center" }}>
-          <input
-            type="checkbox"
-            checked={autoRelease}
-            onChange={(e) => setAutoRelease(e.target.checked)}
-          />
-          <span className="small">Auto-release on completion (requires escrow admin wallet)</span>
-        </label>
-        {adminAddress && (
-          <p className="muted small mono">Escrow admin: {adminAddress}</p>
-        )}
       </div>
     </div>
   );

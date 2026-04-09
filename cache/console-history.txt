@@ -1,6 +1,0 @@
-await charging.getRegistryAddress();
-await contract.isvarifieduser("0x88C3Ec1f73be18f95B3fa878585ff7e820eA51d9");
-);
-  "0xa8fB64247B0b0778ce2909942b171D7347355262"
-  "Userregistry",
-const contract = await ethers.getContractAt(

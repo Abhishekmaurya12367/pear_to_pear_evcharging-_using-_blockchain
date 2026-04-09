@@ -1,11 +1,12 @@
 const { useEffect, useState } = React;
 
 const ABI_FILES = {
-  ChargingRequest: "abis/ChargingRequest.json",
-  MatchingContract: "abis/MatchingContract.json",
-  EnergyValidation: "abis/EnergyValidation.json",
-  EscrowPayment: "abis/EscrowPayment.json",
+  EVChargingEscrow: "abis/EVChargingEscrow.json",
 };
+
+const CHARGING_API =
+  window.CHARGING_API ||
+  `${window.location.protocol}//${window.location.hostname}:4000`;
 
 function ChargingApp() {
   const [abis, setAbis] = useState(null);
@@ -17,6 +18,7 @@ function ChargingApp() {
   const [request, setRequest] = useState(null);
   const [energyDelivered, setEnergyDelivered] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pollId, setPollId] = useState(null);
 
   const requestId = (() => {
     const params = new URLSearchParams(window.location.search);
@@ -35,7 +37,7 @@ function ChargingApp() {
           Object.entries(ABI_FILES).map(async ([name, path]) => {
             const res = await fetch(path);
             const json = await res.json();
-            return [name, json];
+            return [name, window.normalizeAbi(json)];
           })
         );
         setAbis(Object.fromEntries(entries));
@@ -85,10 +87,7 @@ function ChargingApp() {
   useEffect(() => {
     if (!signer || !abis) return;
     const c = {
-      charging: new ethers.Contract(window.CONTRACT_ADDRESSES.ChargingRequest, abis.ChargingRequest, signer),
-      matching: new ethers.Contract(window.CONTRACT_ADDRESSES.MatchingContract, abis.MatchingContract, signer),
-      validation: new ethers.Contract(window.CONTRACT_ADDRESSES.EnergyValidation, abis.EnergyValidation, signer),
-      escrow: new ethers.Contract(window.CONTRACT_ADDRESSES.EscrowPayment, abis.EscrowPayment, signer),
+      escrow: new ethers.Contract(window.CONTRACT_ADDRESSES.EVChargingEscrow, abis.EVChargingEscrow, signer),
     };
     setContracts(c);
   }, [signer, abis]);
@@ -99,14 +98,15 @@ function ChargingApp() {
     (async () => {
       setLoading(true);
       try {
-        const req = await contracts.charging.getRequest(requestId);
+        const req = await contracts.escrow.requests(requestId);
         setRequest({
           id: Number(req.id),
-          receiver: req.reciever,
-          energy: req.energyrequired?.toString?.(),
-          price: req.priceperkilo?.toString?.(),
+          receiver: req.receiver,
+          donor: req.donor,
+          energy: req.energyRequired?.toString?.(),
+          price: req.pricePerUnitWei?.toString?.(),
           location: req.location,
-          status: ["OPEN", "ACCEPTED", "COMPLETED", "CANCELED"][Number(req.status)],
+          status: ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED"][Number(req.status)],
         });
       } catch (e) {
         pushLog(`Load request failed: ${e.message}`);
@@ -134,33 +134,76 @@ function ChargingApp() {
   };
 
   const startCharging = async () => {
-    await withTx(() => contracts.validation.started(requestId), "Start charging");
-    await reloadRequest();
-  };
-
-  const completeCharging = async () => {
-    await withTx(
-      () => contracts.validation.completed(requestId, BigInt(energyDelivered || "0")),
-      "Complete charging"
-    );
+    await startSimulation();
     await reloadRequest();
   };
 
   const reloadRequest = async () => {
     if (!contracts) return;
     try {
-      const req = await contracts.charging.getRequest(requestId);
+      const req = await contracts.escrow.requests(requestId);
       setRequest({
         id: Number(req.id),
-        receiver: req.reciever,
-        energy: req.energyrequired?.toString?.(),
-        price: req.priceperkilo?.toString?.(),
+        receiver: req.receiver,
+        donor: req.donor,
+        energy: req.energyRequired?.toString?.(),
+        price: req.pricePerUnitWei?.toString?.(),
         location: req.location,
-        status: ["OPEN", "ACCEPTED", "COMPLETED", "CANCELED"][Number(req.status)],
+        status: ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED"][Number(req.status)],
       });
     } catch (e) {
       pushLog(`Refresh failed: ${e.message}`);
     }
+  };
+
+  /* ---- backend simulation ---- */
+  const startSimulation = async () => {
+    if (!request) return;
+    try {
+      const body = {
+        sessionId: requestId.toString(),
+        donor: account,
+        receiver: request.receiver,
+        requestedEnergy: request.energy,
+        escrowAddress: window.CONTRACT_ADDRESSES.EVChargingEscrow,
+      };
+      const res = await fetch(`${CHARGING_API}/start-charging`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      pushLog("Simulator: charging started");
+      beginPolling();
+    } catch (e) {
+      pushLog(`Simulator start failed: ${e.message}`);
+    }
+  };
+
+  const beginPolling = () => {
+    if (pollId) clearInterval(pollId);
+    const id = setInterval(async () => {
+      try {
+        const res = await fetch(`${CHARGING_API}/status/${requestId.toString()}`);
+        if (!res.ok) return;
+        const s = await res.json();
+        pushLog(`Status ${s.status}: energy=${s.transferredEnergy}`);
+        if (s.status === "COMPLETED" || s.status === "ERROR" || s.status === "STOPPED") {
+          clearInterval(id);
+          setPollId(null);
+          if (s.txHash) pushLog(`On-chain tx: ${s.txHash}`);
+          if (s.status === "COMPLETED") {
+            // Automatically refresh the UI and MetaMask related blockchain state.
+            await reloadRequest();
+            pushLog("Funds transferred to donor. Session completed!");
+          }
+        } else {
+          setPollId(id);
+        }
+      } catch (e) {
+        // ignore transient errors
+      }
+    }, 1500);
   };
 
   return (
@@ -181,8 +224,13 @@ function ChargingApp() {
           {loading && <p className="muted small">Loading…</p>}
           {request && (
             <div className="small">
-              <p>#{request.id} <span className={`status ${request.status}`}>{request.status}</span></p>
+              <p>
+                #{request.id} <span className={`status ${request.status}`}>{request.status}</span>
+              </p>
               <p className="mono">Receiver: {request.receiver}</p>
+              {request.donor && request.donor !== "0x0000000000000000000000000000000000000000" && (
+                <p className="mono">Donor: {request.donor}</p>
+              )}
               <p>Energy: {request.energy} | Price: {request.price} wei</p>
               <p>Location: {request.location}</p>
             </div>
@@ -191,22 +239,11 @@ function ChargingApp() {
 
         <div className="card">
           <h2>Charging actions</h2>
-          <button onClick={startCharging} disabled={!requestId}>Start Charging</button>
-          <div className="divider" />
-          <label>
-            Energy delivered
-            <input
-              value={energyDelivered}
-              onChange={(e) => setEnergyDelivered(e.target.value)}
-              placeholder="e.g., 10"
-            />
-          </label>
-          <button onClick={completeCharging} disabled={!requestId}>
-            Complete Charging
+          <button onClick={startCharging} disabled={!requestId}>
+            Start Charging (simulator)
           </button>
-          <p className="muted small">
-            Request id is read from URL; no manual entry needed.
-          </p>
+          <div className="divider" />
+          <p className="muted small">Request id is read from URL. Charging completes and pays donor automatically once simulated energy is delivered.</p>
         </div>
 
         <div className="card">

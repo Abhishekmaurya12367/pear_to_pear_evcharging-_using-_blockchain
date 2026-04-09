@@ -1,17 +1,19 @@
 // Default placeholders (will be overwritten after fetch)
 window.CONTRACT_ADDRESSES = {
   Userregistry: "",
-  ChargingRequest: "",
-  MatchingContract: "",
-  EnergyValidation: "",
-  PlatformFee: "",
-  EscrowPayment: "",
-  GovernanceAdmin: "",
+  EVChargingEscrow: "",
 };
 
 // Sepolia chain id
 window.TARGET_CHAIN_ID_HEX = "0xaa36a7";
 window.TARGET_CHAIN_ID_DEC = 11155111n;
+
+// Hardhat artifact is { abi: [...] }; some files are a raw array — ethers needs the array
+window.normalizeAbi = function normalizeAbi(json) {
+  if (Array.isArray(json)) return json;
+  if (json && Array.isArray(json.abi)) return json.abi;
+  throw new Error("ABI JSON must be an array or { abi: [...] }");
+};
 
 (async () => {
   try {
@@ -21,12 +23,7 @@ window.TARGET_CHAIN_ID_DEC = 11155111n;
     const data = await res.json();
     window.CONTRACT_ADDRESSES = {
       Userregistry: data.UserRegistry || data.Userregistry || "",
-      ChargingRequest: data.ChargingRequest || "",
-      MatchingContract: data.MatchingContract || "",
-      EnergyValidation: data.EnergyValidation || "",
-      PlatformFee: data.PlatformFee || "",
-      EscrowPayment: data.EscrowPayment || "",
-      GovernanceAdmin: data.GovernanceAdmin || "",
+      EVChargingEscrow: data.EVChargingEscrow || "",
     };
     console.log("Loaded CONTRACT_ADDRESSES from Addresses.json", window.CONTRACT_ADDRESSES);
   } catch (err) {

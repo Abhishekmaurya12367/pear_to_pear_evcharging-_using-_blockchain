@@ -6,8 +6,8 @@ window.ReceiverView = function ReceiverView({
   setForm,
   totalCost,
   createRequest,
-  depositEscrow,
   isVerified,
+  refundExpired,
 }) {
   return (
     <div className="grid">
@@ -38,28 +38,27 @@ window.ReceiverView = function ReceiverView({
         </label>
         <p className="small">Total cost (energy × price): {totalCost.toString()} wei</p>
         <button onClick={createRequest} disabled={needConnection || locked || !isVerified}>
-          Create request
+          Create request (includes escrow deposit)
         </button>
         <p className="muted small">
-          Deposit to escrow is only allowed when status is ACCEPTED (contract rule). After donor
-          accepts, click Deposit below.
+          This design deposits escrow in the same transaction as request creation.
         </p>
       </div>
 
       <div className={`card ${locked ? "locked" : ""}`}>
-        <h2>Phase 5 — Escrow</h2>
+        <h2>Refund (if expired/failed)</h2>
         <label>
           Request id
           <input
-            value={forms.deposit.id}
-            onChange={(e) => setForm("deposit", "id", e.target.value)}
+            value={forms.refund.id}
+            onChange={(e) => setForm("refund", "id", e.target.value)}
           />
         </label>
-        <button onClick={() => depositEscrow(forms.deposit.id)} disabled={needConnection || locked}>
-          Deposit full amount
+        <button onClick={() => refundExpired(forms.refund.id)} disabled={needConnection || locked}>
+          Claim refund (if expired)
         </button>
         <p className="muted small">
-          Escrow deposit succeeds only when request status is ACCEPTED. Ensure donor accepted and status updated.
+          Refund is allowed if nobody accepted in time, or charging timed out.
         </p>
       </div>
     </div>

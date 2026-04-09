@@ -2,16 +2,11 @@ const { useEffect, useMemo, useState } = React;
 
 const ABI_FILES = {
   Userregistry: "abis/Userregistry.json",
-  ChargingRequest: "abis/ChargingRequest.json",
-  MatchingContract: "abis/MatchingContract.json",
-  EnergyValidation: "abis/EnergyValidation.json",
-  EscrowPayment: "abis/EscrowPayment.json",
-  PlatformFee: "abis/PlatformFee.json",
-  GovernanceAdmin: "abis/GovernanceAdmin.json",
+  EVChargingEscrow: "abis/EVChargingEscrow.json",
 };
 
 const ROLE = ["NONE", "DONOR", "RECEIVER", "BOTH"];
-const STATUS = ["OPEN", "ACCEPTED", "COMPLETED", "CANCELED"];
+const STATUS = ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED"];
 
 function App() {
   const [abis, setAbis] = useState(null);
@@ -21,12 +16,9 @@ function App() {
   const [contracts, setContracts] = useState(null);
   const [logs, setLogs] = useState(["Waiting to connect wallet..."]);
   const [userSelf, setUserSelf] = useState(null);
-  const [adminAddress, setAdminAddress] = useState(null);
   const [requestCount, setRequestCount] = useState(0);
   const [openRequests, setOpenRequests] = useState([]);
   const [receipts, setReceipts] = useState([]);
-  const [feePercent, setFeePercent] = useState(null);
-  const [autoRelease, setAutoRelease] = useState(true);
   const [currentPage, setCurrentPage] = useState("onboard"); // onboard | receiver | donor
   const [acceptingId, setAcceptingId] = useState(null);
   const [loadingSelf, setLoadingSelf] = useState(false);
@@ -35,9 +27,7 @@ function App() {
     register: { ev: "", battery: "", role: "1", autoVerify: false },
     create: { energy: "", price: "", location: "" },
     accept: { id: "" },
-    start: { id: "" },
-    complete: { id: "", delivered: "" },
-    deposit: { id: "" },
+    refund: { id: "" },
     verify: { addr: "" },
   });
 
@@ -58,7 +48,7 @@ function App() {
           Object.entries(ABI_FILES).map(async ([name, path]) => {
             const res = await fetch(path);
             const json = await res.json();
-            return [name, json];
+            return [name, window.normalizeAbi(json)];
           })
         );
         setAbis(Object.fromEntries(entries));
@@ -113,12 +103,7 @@ function App() {
     if (!signer || !abis) return;
     const c = {
       user: new ethers.Contract(window.CONTRACT_ADDRESSES.Userregistry, abis.Userregistry, signer),
-      charging: new ethers.Contract(window.CONTRACT_ADDRESSES.ChargingRequest, abis.ChargingRequest, signer),
-      matching: new ethers.Contract(window.CONTRACT_ADDRESSES.MatchingContract, abis.MatchingContract, signer),
-      validation: new ethers.Contract(window.CONTRACT_ADDRESSES.EnergyValidation, abis.EnergyValidation, signer),
-      escrow: new ethers.Contract(window.CONTRACT_ADDRESSES.EscrowPayment, abis.EscrowPayment, signer),
-      platform: new ethers.Contract(window.CONTRACT_ADDRESSES.PlatformFee, abis.PlatformFee, signer),
-      gov: new ethers.Contract(window.CONTRACT_ADDRESSES.GovernanceAdmin, abis.GovernanceAdmin, signer),
+      escrow: new ethers.Contract(window.CONTRACT_ADDRESSES.EVChargingEscrow, abis.EVChargingEscrow, signer),
     };
     setContracts(c);
     pushLog("Contracts ready");
@@ -140,14 +125,6 @@ function App() {
     } catch (e) {
       pushLog(`Self load failed: ${e.message}`);
     }
-    try {
-      const admin = await contracts.escrow.admin();
-      setAdminAddress(admin);
-    } catch (e) { /* ignore */ }
-    try {
-      const f = await contracts.platform.feePercent();
-      setFeePercent(f.toString());
-    } catch (e) { /* ignore */ }
     setLoadingSelf(false);
   };
 
@@ -171,19 +148,20 @@ function App() {
   const refreshRequests = async () => {
     if (!contracts) return;
     try {
-      const count = await contracts.charging.requestCount();
+      const count = await contracts.escrow.requestCount();
       setRequestCount(Number(count));
       const items = [];
       for (let i = 1; i <= Number(count); i++) {
         try {
-          const r = await contracts.charging.getRequest(i);
-          const status = STATUS[Number(r.status)];
-          const total = r.energyrequired * r.priceperkilo;
+          const r = await contracts.escrow.requests(i);
+          const status = STATUS[Number(r.status)] || "UNKNOWN";
+          const total = r.energyRequired * r.pricePerUnitWei;
           items.push({
             id: Number(r.id),
-            receiver: r.reciever,
-            energy: r.energyrequired,
-            price: r.priceperkilo,
+            receiver: r.receiver,
+            donor: r.donor,
+            energy: r.energyRequired,
+            price: r.pricePerUnitWei,
             total,
             location: r.location,
             status,
@@ -272,11 +250,17 @@ function App() {
       pushLog(`Unable to confirm verification: ${e.message}`);
       return;
     }
+    const total = parseUint(energy) * parseUint(price);
     const receipt = await withTx(
-      () => contracts.charging.createrequest(parseUint(energy), parseUint(price), location),
+      () =>
+        contracts.escrow.createRequest(parseUint(energy), parseUint(price), location, {
+          value: total,
+        }),
       "Create request"
     );
-    if (receipt) refreshRequests();
+    if (receipt) {
+      refreshRequests();
+    }
   };
 
   const acceptRequest = async (id) => {
@@ -288,29 +272,25 @@ function App() {
       return;
     }
     setAcceptingId(parsed.toString());
-    const receipt = await withTx(() => contracts.matching.acceptrequest(parsed), "Accept request");
+    // Open charging page immediately (user gesture) to avoid popup blockers.
+    const chargingUrl = `./charging.html?requestId=${parsed.toString()}`;
+    const tab = window.open(chargingUrl, "_blank", "noopener");
+
+    const receipt = await withTx(() => contracts.escrow.acceptRequest(parsed), "Accept request");
     setAcceptingId(null);
 
     if (receipt) {
       // Remove from OPEN list (accepted now)
       setOpenRequests((prev) => prev.filter((r) => BigInt(r.id) !== parsed));
-
-      // Best-effort status flip to ACCEPTED (1) so validator can start charging
-      try {
-        await withTx(() => contracts.charging.updatestatus(parsed, 1), "Mark request ACCEPTED");
-      } catch (e) {
-        pushLog("Auto-set to ACCEPTED failed (maybe not validator/verified) – do it manually if needed");
-      }
-
-      // Open charging page with requestId param
-      const url = `./charging.html?requestId=${parsed.toString()}`;
-      window.open(url, "_blank", "noopener");
+      // tab already opened to chargingUrl; nothing else to do
+    } else if (tab && !tab.closed) {
+      tab.close(); // close if tx failed
     }
 
     refreshRequests();
   };
 
-  const startSession = async (id) => {
+  const refundExpired = async (id) => {
     let parsed;
     try {
       parsed = mustId(id);
@@ -318,66 +298,8 @@ function App() {
       pushLog(e.message);
       return;
     }
-    await withTx(() => contracts.validation.started(parsed), "Start charging");
-  };
-
-  const completeSession = async (id, energyDelivered) => {
-    let parsed;
-    try {
-      parsed = mustId(id);
-    } catch (e) {
-      pushLog(e.message);
-      return;
-    }
-    const receipt = await withTx(
-      () => contracts.validation.completed(parsed, parseUint(energyDelivered)),
-      "Complete charging"
-    );
-    if (!receipt) return;
-
-    // optional auto-release (admin only)
-    try {
-      if (autoRelease && adminAddress && account.toLowerCase() === adminAddress.toLowerCase()) {
-        const preAmount = await contracts.escrow.Escrowbalance(Number(id));
-        const rel = await withTx(() => contracts.escrow.paymentrelease(Number(id)), "Auto release payment");
-        if (rel) {
-          const block = await provider.getBlock(rel.blockNumber);
-          recordReceipt({
-            tx: rel.hash,
-            requestId: Number(id),
-            energy: energyDelivered,
-            amount: preAmount.toString(),
-            timestamp: block?.timestamp ? new Date(Number(block.timestamp) * 1000).toISOString() : "",
-          });
-        }
-      }
-    } catch (e) {
-      pushLog(`Auto-release skipped: ${e.message}`);
-    }
-  };
-
-  const depositEscrow = async (id) => {
-    if (needConnection) return;
-    let parsed;
-    try {
-      parsed = mustId(id);
-    } catch (e) {
-      pushLog(e.message);
-      return;
-    }
-    try {
-      const req = await contracts.charging.getRequest(parsed);
-      const cost = req.energyrequired * req.priceperkilo;
-      await withTx(
-        () =>
-          contracts.escrow.deposite(parsed, {
-            value: cost,
-          }),
-        `Deposit escrow (${cost} wei)`
-      );
-    } catch (e) {
-      pushLog(`Deposit failed: ${e.message}`);
-    }
+    await withTx(() => contracts.escrow.refundExpired(parsed), "Refund expired");
+    refreshRequests();
   };
 
   const recordReceipt = (data) =>
@@ -446,7 +368,7 @@ function App() {
           registerUser={registerUser}
           userSelf={userSelf}
           setCurrentPage={setCurrentPage}
-          adminAddress={adminAddress}
+            adminAddress={null}
           verifyUser={verifyUser}
         />
       )}
@@ -459,8 +381,8 @@ function App() {
           setForm={setForm}
           totalCost={totalCost}
           createRequest={createRequest}
-          depositEscrow={depositEscrow}
           isVerified={userSelf?.isvarified}
+          refundExpired={refundExpired}
         />
       )}
 
@@ -473,11 +395,11 @@ function App() {
           acceptingId={acceptingId}
           forms={forms}
           setForm={setForm}
-          startSession={startSession}
-          completeSession={completeSession}
-          autoRelease={autoRelease}
-          setAutoRelease={setAutoRelease}
-          adminAddress={adminAddress}
+          startSession={null}
+          completeSession={null}
+          autoRelease={false}
+          setAutoRelease={() => {}}
+          adminAddress={null}
         />
       )}
 
