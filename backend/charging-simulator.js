@@ -61,11 +61,19 @@ const sessions = new Map();
 
 // ---- HELPERS ----
 function loadAbi(kind) {
-  const file =
-    process.env.EV_ESCROW_ABI_PATH ||
-    path.join(__dirname, "..", "artifacts/contracts/EVChargingEscrow.sol/EVChargingEscrow.json");
+  const candidates = [
+    process.env.EV_ESCROW_ABI_PATH,
+    path.join(__dirname, "..", "artifacts/contracts/EVChargingEscrow.sol/EVChargingEscrow.json"),
+    path.join(__dirname, "..", "frontend/abis/EVChargingEscrow.json"),
+  ].filter(Boolean);
 
-  return JSON.parse(fs.readFileSync(file, "utf8")).abi;
+  for (const file of candidates) {
+    if (fs.existsSync(file)) {
+      const json = JSON.parse(fs.readFileSync(file, "utf8"));
+      return Array.isArray(json) ? json : json.abi;
+    }
+  }
+  throw new Error("EVChargingEscrow ABI not found in any known path");
 }
 
 function getContract(address, kind) {
