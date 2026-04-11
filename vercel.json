@@ -1,0 +1,9 @@
+{
+  "outputDirectory": "frontend",
+  "buildCommand": "",
+  "installCommand": "",
+  "framework": null,
+  "rewrites": [
+    { "source": "/charging", "destination": "/charging.html" }
+  ]
+}
