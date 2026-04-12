@@ -47,6 +47,7 @@ h1 {
   padding: 24px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s ease, border-color 0.2s ease;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .card:hover {
@@ -161,7 +162,21 @@ button:disabled {
 .status.OPEN { color: #22d3ee; border-color: rgba(34,211,238,0.3); }
 .status.ACCEPTED { color: #c084fc; border-color: rgba(192,132,252,0.3); }
 .status.COMPLETED { color: #10b981; border-color: rgba(16,185,129,0.3); }
-.status.CANCELED { color: #f472b6; border-color: rgba(244,114,182,0.3); }
+
+.verified-pill {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+  background: rgba(16,185,129,0.1) !important;
+  font-weight: 700 !important;
+}
+.unverified-pill {
+  border-color: #fbbf24 !important;
+  color: #fbbf24 !important;
+  background: rgba(251,191,36,0.1) !important;
+  font-weight: 600 !important;
+}
+.status.FAILED { color: #f472b6; border-color: rgba(244,114,182,0.3); }
+.status.DISPUTED { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
 
 .log {
   background: rgba(0, 0, 0, 0.5);
@@ -221,6 +236,45 @@ button:disabled {
   background: var(--border);
   color: var(--text);
 }
+
+.dispute-btn {
+  background: transparent !important;
+  border: 1px solid var(--danger) !important;
+  color: var(--danger) !important;
+  box-shadow: none !important;
+}
+.dispute-btn:hover {
+  background: var(--danger) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(244,114,182,0.4) !important;
+}
+
+.success-badge {
+  padding: 8px 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  color: #10b981;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.accept-btn {
+  background: linear-gradient(135deg, #7e22ce, #a855f7) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35) !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
 @media (max-width: 640px) {
   body { padding: 24px 16px; }

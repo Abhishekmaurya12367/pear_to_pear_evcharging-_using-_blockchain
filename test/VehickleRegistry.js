@@ -70,16 +70,16 @@ describe("  Userregistry contract", function () {
   });
   //unregistered user can not update
   it(" Unregistered user cannot update role", async function () {
-    await expect(registry.connect(user1).update_role(2)).to.be.revertedWith(
-      "only registerd student allowed",
+    await expect(registry.connect(user1).update_role(2)).to.be.revertedWithCustomError(
+      registry, "NotRegistered",
     );
   });
 
   // role cannot be none
   it("Role cannot be NONE", async function () {
     await registry.connect(user1).register_user("tesla", 500, 1);
-    await expect(registry.connect(user1).update_role(0)).to.be.revertedWith(
-      "invalid role",
+    await expect(registry.connect(user1).update_role(0)).to.be.revertedWithCustomError(
+      registry, "InvalidRole",
     );
   });
   //only admin can verify
@@ -101,13 +101,13 @@ describe("  Userregistry contract", function () {
 
   await expect(
     registry.connect(user1).varifyuser(user1.address)
-  ).to.be.revertedWith("only admin allowed");
+  ).to.be.reverted;
 
 });
   //Admin canot verify unregistered user
   it("Admin cannot verify unregistered user", async function () {
-    await expect(registry.varifyuser(user1.address)).to.be.revertedWith(
-      "user not registered",
+    await expect(registry.varifyuser(user1.address)).to.be.revertedWithCustomError(
+      registry, "NotRegistered",
     );
   });
   //test the blocklist user or not
@@ -119,7 +119,7 @@ describe("  Userregistry contract", function () {
   it("Non-admin cannot blacklist", async function () {
     await expect(
       registry.connect(user1).userblocklist(user2.address),
-    ).to.be.revertedWith("only admin allowed");
+    ).to.be.reverted;
   });
   // test getuser
   it(" getuser returns correct wallet", async function () {

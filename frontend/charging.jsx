@@ -106,7 +106,7 @@ function ChargingApp() {
           energy: req.energyRequired?.toString?.(),
           price: req.pricePerUnitWei?.toString?.(),
           location: req.location,
-          status: ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED"][Number(req.status)],
+          status: ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED", "FAILED", "DISPUTED"][Number(req.status)],
         });
       } catch (e) {
         pushLog(`Load request failed: ${e.message}`);
@@ -149,7 +149,7 @@ function ChargingApp() {
         energy: req.energyRequired?.toString?.(),
         price: req.pricePerUnitWei?.toString?.(),
         location: req.location,
-        status: ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED"][Number(req.status)],
+        status: ["OPEN", "ACCEPTED", "CHARGING", "COMPLETED", "CANCELED", "REFUNDED", "FAILED", "DISPUTED"][Number(req.status)],
       });
     } catch (e) {
       pushLog(`Refresh failed: ${e.message}`);

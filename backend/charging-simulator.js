@@ -23,6 +23,8 @@ const ReqStatus = {
   COMPLETED: 3,
   CANCELED: 4,
   REFUNDED: 5,
+  FAILED: 6,
+  DISPUTED: 7
 };
 
 /** Unified flow uses EVChargingEscrow only — do not fall back to legacy EscrowPayment (ESCROW_ADDRESS). */
@@ -132,7 +134,17 @@ async function completeOnChain(session, deliveredOverride) {
   const receipt = await tx.wait();
   console.log(`[chain] Complete+Payout tx: ${receipt.hash}`);
 
-  session.status = "COMPLETED";
+  const r = await escrow.getRequest(sessionId);
+  const finalStatus = Number(r.status);
+  
+  if (finalStatus === ReqStatus.FAILED) {
+    session.status = "FAILED";
+    console.log(`[chain] Session ${sessionId} FAILED energy validation on-chain.`);
+  } else {
+    session.status = "COMPLETED";
+    console.log(`[chain] Session ${sessionId} COMPLETED on-chain.`);
+  }
+  
   session.txHash = receipt.hash;
 }
 

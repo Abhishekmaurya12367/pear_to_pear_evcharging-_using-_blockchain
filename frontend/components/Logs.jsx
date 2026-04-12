@@ -2,15 +2,18 @@
 window.LogPanel = function LogPanel({ logs }) {
   return (
     <div className="card">
-      <h2>Logs</h2>
+      <h2>📜 Activity Logs</h2>
       <div className="log">
         {logs.map((l, i) => (
           <div key={i}>{l}</div>
         ))}
       </div>
       <p className="muted small" style={{ marginTop: 8 }}>
-        Sequence (per contracts): register → admin verifies → receiver creates →
-        donor accepts → status to ACCEPTED → deposit → start → complete → (admin) release.
+        <strong>Standard Flow:</strong> Register ➔ Admin Verify ➔ Receiver Create ➔
+        Donor Accept ➔ Validator Start/Complete ➔ Energy Validation ➔ Automatic Payout.
+      </p>
+      <p className="muted small">
+        <strong>Security:</strong> All payments protected by ReentrancyGuard and AccessControl roles.
       </p>
     </div>
   );
